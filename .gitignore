@@ -1,0 +1,51 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Output of the go coverage tool
+*.out
+
+# If you have a file named `coverprofile` in your project, remove this line.
+coverprofile
+
+# Compiled object files
+*.o
+*.a
+
+# Temporary files
+*.log
+
+# Go vendor folder
+/vendor/
+
+# Dependency directories (remove the comment below if you're using Go modules)
+# /vendor/
+
+# Go workspace file
+go.work
+go.work.sum
+
+# Go build cache
+go-build/
+
+# IDE/editor specific files
+.idea/
+*.swp
+*.swo
+*.swn
+*.bak
+*~
+*.sublime-project
+*.sublime-workspace
+
+# VS Code
+.vscode/
+
+# MacOS specific files
+.DS_Store
+
+# Log files
+*.log

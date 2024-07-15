@@ -82,7 +82,7 @@ func main() {
 		defer trans.Destroy()
 
 		for _, op := range trans.Ops {
-			fmt.Printf("Opcode: %s\n", op.Opcode.String())
+			fmt.Println(trans.Format(op))
 		}
 	}
 

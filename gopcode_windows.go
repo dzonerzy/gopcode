@@ -12,7 +12,9 @@ package gopcode
 import (
 	"C"
 )
-import "unsafe"
+import (
+	"unsafe"
+)
 
 type AddrSpace struct {
 	NativeAddrSpacePtr *C.NativeAddrSpace
@@ -29,8 +31,13 @@ type AddrSpace struct {
 
 type VarNode struct {
 	Space  *AddrSpace
-	Offset uint8
-	Size   uint32
+	Offset uint64
+	Size   int32
+}
+
+func (v *VarNode) GetRegisterName() string {
+	name := C.pcode_varcode_get_register_name(v.Space.NativeAddrSpacePtr, C.ulonglong(v.Offset), C.int32_t(v.Size))
+	return C.GoString(name)
 }
 
 type Register struct {
@@ -76,11 +83,10 @@ func (c *Context) GetAllRegisters() []*Register {
 					Highest:            uint64(reg.varnode.space.highest),
 					PointerLowerBound:  uint64(reg.varnode.space.pointer_lower_bound),
 					PointerUpperBound:  uint64(reg.varnode.space.pointer_upper_bound),
-					RegisterName:       C.GoString(reg.varnode.space.register_name),
 					NativeAddrSpacePtr: reg.varnode.space.n_space,
 				},
-				Offset: uint8(reg.varnode.offset),
-				Size:   uint32(reg.varnode.size),
+				Offset: uint64(reg.varnode.offset),
+				Size:   int32(reg.varnode.size),
 			},
 		})
 	}
@@ -92,8 +98,8 @@ func (c *Context) GetAllRegisters() []*Register {
 	return regs
 }
 
-func (c *Context) GetRegisterName(space *AddrSpace, offset uint8, size uint32) string {
-	cname := C.pcode_context_get_register_name(c._ctx, space.NativeAddrSpacePtr, C.uint8_t(offset), C.uint32_t(size))
+func (c *Context) GetRegisterName(space *AddrSpace, offset uint64, size int32) string {
+	cname := C.pcode_context_get_register_name(c._ctx, space.NativeAddrSpacePtr, C.ulonglong(offset), C.int32_t(size))
 	return C.GoString(cname)
 }
 

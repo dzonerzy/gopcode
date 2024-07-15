@@ -16,12 +16,17 @@ type PcodeOp struct {
 }
 
 type PcodeTranslation struct {
-	_trans *C.PcodeTranslationC
-	Ops    []PcodeOp
+	_formatter prettyPrinter
+	_trans     *C.PcodeTranslationC
+	Ops        []PcodeOp
 }
 
 func (p *PcodeTranslation) Destroy() {
 	C.pcode_translation_free(p._trans)
+}
+
+func (p *PcodeTranslation) Format(pco PcodeOp) string {
+	return p._formatter.formatPcodeOp(pco)
 }
 
 // PcodeContext *ctx, const char *bytes, unsigned int num_bytes, uint64_t base_address, unsigned int max_instructions, uint32_t flags)
@@ -33,7 +38,10 @@ func pcode_translate(ctx *Context, dat []byte, baseAddress uint64, maxInstructio
 		return nil, fmt.Errorf("translation failed")
 	}
 
-	var pcodetrans = &PcodeTranslation{}
+	var pcodetrans = &PcodeTranslation{
+		_formatter: newPcodeFormatter(),
+	}
+
 	pcodetrans._trans = trans
 
 	for i := 0; i < int(trans.num_ops); i++ {
@@ -43,8 +51,8 @@ func pcode_translate(ctx *Context, dat []byte, baseAddress uint64, maxInstructio
 		pcodeop.Opcode = OpCode(op.opcode)
 		if op.output != nil {
 			pcodeop.Output = &VarNode{
-				Offset: uint8(op.output.offset),
-				Size:   uint32(op.output.size),
+				Offset: uint64(op.output.offset),
+				Size:   int32(op.output.size),
 				Space: &AddrSpace{
 					Name:               C.GoString(op.output.space.name),
 					Index:              uint32(op.output.space.index),
@@ -54,7 +62,6 @@ func pcode_translate(ctx *Context, dat []byte, baseAddress uint64, maxInstructio
 					Highest:            uint64(op.output.space.highest),
 					PointerLowerBound:  uint64(op.output.space.pointer_lower_bound),
 					PointerUpperBound:  uint64(op.output.space.pointer_upper_bound),
-					RegisterName:       C.GoString(op.output.space.register_name),
 					NativeAddrSpacePtr: op.output.space.n_space,
 				},
 			}
@@ -65,8 +72,8 @@ func pcode_translate(ctx *Context, dat []byte, baseAddress uint64, maxInstructio
 			inp := (*C.VarnodeDataC)(unsafe.Pointer(uintptr(unsafe.Pointer(op.inputs)) + uintptr(j)*unsafe.Sizeof(C.VarnodeDataC{})))
 
 			pcodeop.Inputs = append(pcodeop.Inputs, &VarNode{
-				Offset: uint8(inp.offset),
-				Size:   uint32(inp.size),
+				Offset: uint64(inp.offset),
+				Size:   int32(inp.size),
 				Space: &AddrSpace{
 					Name:               C.GoString(inp.space.name),
 					Index:              uint32(inp.space.index),
@@ -76,7 +83,6 @@ func pcode_translate(ctx *Context, dat []byte, baseAddress uint64, maxInstructio
 					Highest:            uint64(inp.space.highest),
 					PointerLowerBound:  uint64(inp.space.pointer_lower_bound),
 					PointerUpperBound:  uint64(inp.space.pointer_upper_bound),
-					RegisterName:       C.GoString(inp.space.register_name),
 					NativeAddrSpacePtr: inp.space.n_space,
 				},
 			})

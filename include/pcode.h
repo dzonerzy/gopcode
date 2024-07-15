@@ -43,15 +43,14 @@ extern "C"
         uint64_t highest;
         uint64_t pointer_lower_bound;
         uint64_t pointer_upper_bound;
-        const char *register_name;
         NativeAddrSpace *n_space;
     } AddrSpaceC;
 
     typedef struct
     {
         AddrSpaceC *space;
-        uint8_t offset;
-        uint32_t size;
+        unsigned long long offset;
+        int32_t size;
     } VarnodeDataC;
 
     typedef struct
@@ -99,15 +98,18 @@ extern "C"
     void pcode_context_free(PcodeContext *ctx);
     void pcode_context_set_variable_default(PcodeContext *ctx, const char *nm, uint32_t val);
     RegisterInfoListC *pcode_context_get_all_registers(PcodeContext *ctx);
-    const char *pcode_context_get_register_name(PcodeContext *ctx, NativeAddrSpace *space, uint8_t offset, uint32_t size);
+    const char *pcode_context_get_register_name(PcodeContext *ctx, NativeAddrSpace *space, unsigned long long offset, int32_t size);
 
     // Disassemble code
-    PcodeDisassemblyC *pcode_disassemble(PcodeContext *ctx, const char *bytes, unsigned int num_bytes, unsigned long long address, unsigned int max_instructions);
+    PcodeDisassemblyC *pcode_disassemble(PcodeContext *ctx, const char *bytes, unsigned int num_bytes, unsigned long long base_address, unsigned int max_instructions);
     void pcode_disassembly_free(PcodeDisassemblyC *disas);
 
     // Translate code
     PcodeTranslationC *pcode_translate(PcodeContext *ctx, const char *bytes, unsigned int num_bytes, unsigned long long base_address, unsigned int max_instructions, uint32_t flags);
     void pcode_translation_free(PcodeTranslationC *trans);
+
+    // VarNode code
+    const char *pcode_varcode_get_register_name(NativeAddrSpace *space, unsigned long long offset, int32_t size);
 
 #ifdef __cplusplus
 }

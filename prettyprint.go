@@ -122,11 +122,11 @@ func (pp pcodePrettySpecial) format_CALLIND(pco PcodeOp) string {
 }
 
 func (pp pcodePrettySpecial) format_CBRANCH(pco PcodeOp) string {
-	return fmt.Sprintf("if %s goto %s", pp.formatVarNode(*pco.Inputs[0]), pp.formatVarNode(*pco.Inputs[1]))
+	return fmt.Sprintf("if (%s) goto %s", pp.formatVarNode(*pco.Inputs[1]), pp.formatVarNode(*pco.Inputs[0]))
 }
 
 func (pp pcodePrettySpecial) format_LOAD(pco PcodeOp) string {
-	return fmt.Sprintf("*[%s]%s", pco.Inputs[0].Space.Name, pp.formatVarNode(*pco.Inputs[1]))
+	return fmt.Sprintf("*[%s]%s", pco.Inputs[0].GetSpaceFromConst().Name, pp.formatVarNode(*pco.Inputs[1]))
 }
 
 func (pp pcodePrettySpecial) format_RETURN(pco PcodeOp) string {
@@ -134,7 +134,7 @@ func (pp pcodePrettySpecial) format_RETURN(pco PcodeOp) string {
 }
 
 func (pp pcodePrettySpecial) format_STORE(pco PcodeOp) string {
-	return fmt.Sprintf("*[%s]%s = %s", pco.Inputs[0].Space.Name, pp.formatVarNode(*pco.Inputs[1]), pp.formatVarNode(*pco.Inputs[2]))
+	return fmt.Sprintf("*[%s]%s = %s", pco.Inputs[0].GetSpaceFromConst().Name, pp.formatVarNode(*pco.Inputs[1]), pp.formatVarNode(*pco.Inputs[2]))
 }
 
 func (pp pcodePrettySpecial) formatPcodeOp(pco PcodeOp) string {

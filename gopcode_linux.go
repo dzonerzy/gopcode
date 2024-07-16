@@ -41,6 +41,27 @@ func (v *VarNode) GetRegisterName() string {
 	return C.GoString(name)
 }
 
+func (v *VarNode) GetSpaceFromConst() *AddrSpace {
+	var sp *AddrSpace = nil
+
+	if v.Space.Name == "const" {
+		var res *C.AddrSpaceC = C.pcode_varnode_get_space_from_const(C.ulonglong(v.Offset))
+		sp = &AddrSpace{
+			Name:               C.GoString(res.name),
+			Index:              uint32(res.index),
+			AddressSize:        uint32(res.address_size),
+			WordSize:           uint32(res.word_size),
+			Flags:              AddrSpaceFlags(res.flags),
+			Highest:            uint64(res.highest),
+			PointerLowerBound:  uint64(res.pointer_lower_bound),
+			PointerUpperBound:  uint64(res.pointer_upper_bound),
+			NativeAddrSpacePtr: res.n_space,
+		}
+	}
+
+	return sp
+}
+
 type Register struct {
 	Node *VarNode
 	Name string

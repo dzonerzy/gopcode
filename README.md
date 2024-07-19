@@ -64,5 +64,6 @@ GoPCode is based on the [pcode_c](https://github.com/dzonerzy/pcode_c) repositor
 
 - windows x86 (64-bit)
 - linux x86 (64-bit)
+- OSX arm (64-bit)
 
 building for diffrent architectures is not tested and may not work.

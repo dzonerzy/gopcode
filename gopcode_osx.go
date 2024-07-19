@@ -5,7 +5,7 @@ package gopcode
 
 /*
 #cgo CFLAGS: -I${SRCDIR}/include
-#cgo LDFLAGS: -L${SRCDIR}/lib/osx/x64 -lpcode -lstdc++ -lm
+#cgo LDFLAGS: -L${SRCDIR}/lib/osx/arm -lpcode -lstdc++ -lm
 */
 // #include <unistd.h>
 // #include <stdlib.h>
@@ -139,7 +139,7 @@ func (c *Context) GetRegisterName(space *AddrSpace, offset uint64, size int32) s
 	cname_gostr := C.GoString(cname)
 
 	C.free(unsafe.Pointer(cname))
-	
+
 	return cname_gostr
 }
 

@@ -48,3 +48,5 @@ go-build/
 
 # Log files
 *.log
+
+dist/

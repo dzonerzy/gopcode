@@ -13,7 +13,6 @@ coverprofile
 
 # Compiled object files
 *.o
-*.a
 
 # Temporary files
 *.log

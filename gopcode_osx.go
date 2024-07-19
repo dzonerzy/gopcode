@@ -5,7 +5,7 @@ package gopcode
 
 /*
 #cgo CFLAGS: -I${SRCDIR}/include
-#cgo LDFLAGS: -L${SRCDIR}/lib/osx/arm -lpcode -lstdc++ -lm
+#cgo LDFLAGS: -L${SRCDIR}/lib/osx/arm64 -lpcode -lstdc++ -lm
 */
 // #include <unistd.h>
 // #include <stdlib.h>

@@ -110,7 +110,7 @@ extern "C"
 
     // VarNode code
     const char *pcode_varcode_get_register_name(NativeAddrSpace *space, unsigned long long offset, int32_t size);
-    AddrSpaceC *pcode_varnode_get_space_from_const(uint64_t offset);
+    AddrSpaceC *pcode_varnode_get_space_from_const(unsigned long long offset);
 
 #ifdef __cplusplus
 }

@@ -37,7 +37,11 @@ type VarNode struct {
 
 func (v *VarNode) GetRegisterName() string {
 	name := C.pcode_varcode_get_register_name(v.Space.NativeAddrSpacePtr, C.ulonglong(v.Offset), C.int32_t(v.Size))
-	return C.GoString(name)
+	n := C.GoString(name)
+
+	C.free(unsafe.Pointer(name))
+
+	return n
 }
 
 func (v *VarNode) GetSpaceFromConst() *AddrSpace {
@@ -56,6 +60,9 @@ func (v *VarNode) GetSpaceFromConst() *AddrSpace {
 			PointerUpperBound:  uint64(res.pointer_upper_bound),
 			NativeAddrSpacePtr: res.n_space,
 		}
+
+		C.free(unsafe.Pointer(res.name))
+		C.free(unsafe.Pointer(res))
 	}
 
 	return sp
@@ -110,7 +117,14 @@ func (c *Context) GetAllRegisters() []*Register {
 				Size:   int32(reg.varnode.size),
 			},
 		})
+
+		C.free(unsafe.Pointer(reg.varnode.space.name))
+		C.free(unsafe.Pointer(reg.varnode.space))
+		C.free(unsafe.Pointer(reg.name))
 	}
+
+	C.free(unsafe.Pointer(reglist.registers))
+	C.free(unsafe.Pointer(reglist))
 
 	if c._registers == nil {
 		c._registers = regs
@@ -121,7 +135,11 @@ func (c *Context) GetAllRegisters() []*Register {
 
 func (c *Context) GetRegisterName(space *AddrSpace, offset uint64, size int32) string {
 	cname := C.pcode_context_get_register_name(c._ctx, space.NativeAddrSpacePtr, C.ulonglong(offset), C.int32_t(size))
-	return C.GoString(cname)
+	cname_gostr := C.GoString(cname)
+
+	C.free(unsafe.Pointer(cname))
+	
+	return cname_gostr
 }
 
 func (c *Context) Disassemble(data []byte, baseAddress uint64, maxInstructions uint32) (*PcodeDisassembly, error) {

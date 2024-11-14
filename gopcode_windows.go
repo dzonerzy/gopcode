@@ -138,7 +138,7 @@ func (c *Context) GetRegisterName(space *AddrSpace, offset uint64, size int32) s
 	cname_gostr := C.GoString(cname)
 
 	C.free(unsafe.Pointer(cname))
-	
+
 	return cname_gostr
 }
 

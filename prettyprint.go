@@ -5,6 +5,10 @@ import (
 	"strings"
 )
 
+var (
+	DefaultPcodeFormatter = newPcodeFormatter()
+)
+
 type prettyPrinter interface {
 	formatPcodeOp(code PcodeOp) string
 	formatVarNode(code VarNode) string
